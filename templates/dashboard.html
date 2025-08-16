@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block stylies%}
+<style>
+    .main {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+    }
+
+    .header {
+      background: white;
+      color: #008080;
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 128, 128, 0.2);
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.2em;
+      opacity: 0.7;
+    }
+
+    /* Section 1: Key Metrics */
+    .metrics-section {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0, 128, 128, 0.1);
+    }
+
+    .section-title {
+      font-size: 1.5em;
+      color: #008080;
+      margin-bottom: 30px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .metric-card {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, #f8fdfd 0%, #ffffff 100%);
+      border-radius: 15px;
+      border: 2px solid #e0f2f2;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 128, 128, 0.15);
+    }
+
+    .metric-value {
+      font-size: 3.5em;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .churn-value {
+      color: #ff6b6b;
+    }
+
+    .customers-value {
+      color: #008080;
+    }
+
+    .metric-label {
+      font-size: 1.3em;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* Section 2: Monthly Trends */
+    .trends-section {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0, 128, 128, 0.1);
+    }
+
+    .filters-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-label {
+      font-weight: 600;
+      color: #008080;
+      font-size: 0.9em;
+    }
+
+    .filter-select {
+      padding: 10px 15px;
+      margin: 5px;
+      border: 2px solid #008080;
+      border-radius: 8px;
+      background: white;
+      color: #008080;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-select.selected {
+      background-color: #008080;
+      color: white;
+    }
+
+    .filter-select.selected:hover {
+      background: #006666;
+      border-color: #006666; 
+    }
+
+    .filter-select:hover {
+      background: #f0f8f8;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 400px;
+      margin-top: 20px;
+    }
+
+    /* Section 3: Feature Impact */
+    .impact-section {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 8px 25px rgba(0, 128, 128, 0.1);
+    }
+
+    .beeswarm-container {
+      background: #f8fdfd;
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid #e0f2f2;
+      text-align: center;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .beeswarm-container p {
+      margin-bottom: 20px;
+    }
+
+    .beeswarm-placeholder {
+      color: #008080;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .beeswarm-placeholder::before {
+      content: "📊";
+      display: block;
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    .feature-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .feature-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #008080;
+      text-align: center;
+    }
+
+    .feature-name {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .feature-impact {
+      color: #008080;
+      font-size: 0.9em;
+    }
+
+    .update-time {
+      text-align: center;
+      color: #666;
+      margin-top: 20px;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .filters-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .header h1 {
+        font-size: 2em;
+      }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="main">
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📊 Customer Churn Dashboard</h1>
+      <p>Real-time Analytics & Insights</p>
+    </div>
+
+    <!-- Section 1: Key Metrics -->
+    <div class="metrics-section">
+      <div class="section-title">Key Performance Indicators</div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-value churn-value" id="churnRateValue">
+            {{ churn_rate.round(1) }}%
+          </div>
+          <div class="metric-label">Churn Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-value customers-value" id="totalCustomersValue">
+            {{ total_customers }}
+          </div>
+          <div class="metric-label">Total Customers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Monthly Trends with Filters -->
+    <div class="trends-section">
+      <div class="section-title">Monthly Churn Trends</div>
+
+      <div class="filters-container">
+        <form method="POST">
+          {% for title, name in [ 
+            ("all", "all"),
+            ("month-to-month contract", "Contract__Month-to-month"),
+            ("One year contract", "Contract__One year"),
+            ("Two year contract", "Contract__Two year"),
+            ("tenure more than average", "tenure__more_avg"),
+            ("tenure less than average", "tenure__less_avg"),
+          ] %}
+          <button
+            type="submit"
+            class="filter-select {% if churn_rates_option.lower() == title.lower() %}selected{% endif %}"
+            name="{{ name }}"
+          >
+            For {{ title }}
+          </button>
+          {% endfor %}
+        </form>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="monthlyChurnChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Section 3: Feature Impact (Beeswarm Plot) -->
+    <div class="impact-section">
+      <div class="section-title">Feature Impact Analysis</div>
+
+      <div class="beeswarm-container">
+        <div class="beeswarm-placeholder">
+          SHAP Bar Plot
+        </div>
+        <p>Shows the importance for each feature</p>
+        <img src="data:image/png;base64,{{ bar_plot }}" alt="SHAP Waterfall Plot" style="max-width: 100%; height: auto; border-radius: 8px;">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let monthlyChart;
+    const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+    const label = "{{ churn_rates_option }}";
+
+    function initChart() {
+      const ctx = document
+        .getElementById("monthlyChurnChart")
+        .getContext("2d");
+
+      const data = JSON.parse("{{ churn_rates }}");
+
+      console.log(data[0]);
+
+      monthlyChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: label,
+              data: data,
+              borderColor: "#008080",
+              backgroundColor: "rgba(0, 128, 128, 0.1)",
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: "#008080",
+              pointBorderColor: "#fff",
+              pointBorderWidth: 3,
+              pointRadius: 8,
+              pointHoverRadius: 10,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 0,
+              max: 60,
+              ticks: {
+                callback: function (value) {
+                  return value + "%";
+                },
+                font: {
+                  size: 14,
+                },
+              },
+              grid: {
+                color: "rgba(0, 128, 128, 0.1)",
+              },
+            },
+            x: {
+              ticks: {
+                font: {
+                  size: 14,
+                },
+              },
+              grid: {
+                color: "rgba(0, 128, 128, 0.1)",
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: "top",
+              labels: {
+                font: {
+                  size: 16,
+                  weight: "bold",
+                },
+                color: "#008080",
+              },
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 128, 128, 0.9)",
+              titleColor: "#fff",
+              bodyColor: "#fff",
+              callbacks: {
+                label: function (context) {
+                  return context.parsed.y.toFixed(1) + "% Churn Rate";
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // Initialize dashboard
+    document.addEventListener("DOMContentLoaded", function () {
+      initChart();
+      updateTime();
+
+      // Update time every minute
+      setInterval(updateTime, 60000);
+    });
+
+    // Simulate data refresh every 5 minutes
+    setInterval(() => {
+      // Add slight variations to make it feel live
+      Object.keys(chartData).forEach((key) => {
+        chartData[key].data = chartData[key].data.map((val) => {
+          const variation = (Math.random() - 0.5) * 2; // ±1%
+          return Math.max(0, val + variation);
+        });
+      });
+      updateChart();
+      updateTime();
+    }, 300000);
+  </script>
+</div>
+{% endblock %}
