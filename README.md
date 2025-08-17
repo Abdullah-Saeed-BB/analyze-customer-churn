@@ -1,8 +1,10 @@
-# Analyze Customer Churn
+# Analyze Customer Churn (CChurn)
 By entering customer information the machine learning model will predict customer churn, providing the reasons, and write solutions for keeping the customer or gain the customer.<br/>
 I used a **Flask** to build the web application, **Scikit-learn** to create model, and **SHAP (SHapley Additive exPlanations)** to interpret the model.
 
 The process of creating the model you can find in this [Kaggle notebook](https://www.kaggle.com/code/abdullahsaeedwebdev/telco-customer-churn-ml-shap-80-8-acc)
+
+#### [Live demo](https://analyze-customer-churn.onrender.com/)
 ## Project Structure
  - `main.py` The main file to run the project.
  - `custom_function.py`. Contain main functions, to avoid write everything in single file.  
