@@ -7,8 +7,6 @@ from io import BytesIO
 import joblib 
 import shap
 
-import inspect
-
 # Create a Blueprint named 'main'
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -43,7 +41,6 @@ def dashboard():
         for title, condition in churn_filters 
     ]
 
-    print(churn_rates)
 
     # if request.method == "POST":
     #     # Filter by the Contract
