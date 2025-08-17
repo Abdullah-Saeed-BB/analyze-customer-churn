@@ -274,24 +274,16 @@
       <div class="section-title">Monthly Churn Trends</div>
 
       <div class="filters-container">
-        <form method="POST">
-          {% for title, name in [ 
-            ("all", "all"),
-            ("month-to-month contract", "Contract__Month-to-month"),
-            ("One year contract", "Contract__One year"),
-            ("Two year contract", "Contract__Two year"),
-            ("tenure more than average", "tenure__more_avg"),
-            ("tenure less than average", "tenure__less_avg"),
-          ] %}
+          {% for title, _ in churn_rates %}
           <button
-            type="submit"
-            class="filter-select {% if churn_rates_option.lower() == title.lower() %}selected{% endif %}"
-            name="{{ name }}"
+            class="filter-select"
+            id="{{ title }}"
+            name="{{ title }}"
+            onclick="updateChart('{{ title }}')"
           >
             For {{ title }}
           </button>
           {% endfor %}
-        </form>
       </div>
 
       <div class="chart-container">
@@ -317,16 +309,14 @@
     let monthlyChart;
     const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
     const label = "{{ churn_rates_option }}";
+    const churn_rates_str = "{{churn_rates}}".replaceAll("&#39;", '"', );
+    const data = Object.fromEntries(JSON.parse(churn_rates_str));
 
-    function initChart() {
+    function initChart(filter) {
       const ctx = document
         .getElementById("monthlyChurnChart")
         .getContext("2d");
-
-      const data = JSON.parse("{{ churn_rates }}");
-
-      console.log(data[0]);
-
+        
       monthlyChart = new Chart(ctx, {
         type: "line",
         data: {
@@ -334,7 +324,7 @@
           datasets: [
             {
               label: label,
-              data: data,
+              data: data["all"],
               borderColor: "#008080",
               backgroundColor: "rgba(0, 128, 128, 0.1)",
               fill: true,
@@ -405,27 +395,25 @@
       });
     }
 
+    function updateChart(title) {
+      monthlyChart.data.datasets[0].data = data[title];
+      monthlyChart.update();
+
+      Object.keys(data).forEach((key) => {
+        element = document.getElementById(key)
+        if (key == title) {
+          element.classList = ["filter-select selected"]
+        } else {
+          element.classList = ["filter-select"]
+        }
+      })
+    }
+
     // Initialize dashboard
     document.addEventListener("DOMContentLoaded", function () {
       initChart();
-      updateTime();
-
-      // Update time every minute
-      setInterval(updateTime, 60000);
+      updateChart("all")
     });
-
-    // Simulate data refresh every 5 minutes
-    setInterval(() => {
-      // Add slight variations to make it feel live
-      Object.keys(chartData).forEach((key) => {
-        chartData[key].data = chartData[key].data.map((val) => {
-          const variation = (Math.random() - 0.5) * 2; // ±1%
-          return Math.max(0, val + variation);
-        });
-      });
-      updateChart();
-      updateTime();
-    }, 300000);
   </script>
 </div>
 {% endblock %}
