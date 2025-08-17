@@ -397,6 +397,7 @@
 
     function updateChart(title) {
       monthlyChart.data.datasets[0].data = data[title];
+      monthlyChart.data.datasets[0].label = title[0].toUpperCase() + title.slice(1);
       monthlyChart.update();
 
       Object.keys(data).forEach((key) => {
