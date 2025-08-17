@@ -19,3 +19,9 @@ The process of creating the model you can find in this [Kaggle notebook](some_sh
  - `templates/not_found.html` When the page that user looking for not exist, the user redircetd to this page.
 
 ## Installation
+Clone the project:<br/>
+`git clone https://github.com/Abdullah-Saeed-BB/analyze-customer-churn.git`
+
+Run the `main.py`, and navigate to `localhost:5000` that shows in the log, and that's it :)
+
+## Screenshots
