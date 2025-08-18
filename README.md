@@ -4,7 +4,7 @@ I used a **Flask** to build the web application, **Scikit-learn** to create mode
 
 The process of creating the model you can find in this [Kaggle notebook](https://www.kaggle.com/code/abdullahsaeedwebdev/telco-customer-churn-ml-shap-80-8-acc)
 
-#### [Live demo](https://analyze-customer-churn.onrender.com/)
+### [Live demo](https://analyze-customer-churn.onrender.com/)
 ## Project Structure
  - `main.py` The main file to run the project.
  - `custom_function.py`. Contain main functions, to avoid write everything in single file.  
