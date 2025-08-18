@@ -37,36 +37,38 @@ def dashboard():
         [title, [float(chunk["Churn"].value_counts(True)["Yes"] * 100) for chunk in split_dataframe(data[condition])]]
         for title, condition in churn_filters 
     ]
-
-    # # Create Beeswarm plot
-    explainer = joblib.load("./models/shap_explainer.joblib")
-    preprocessor = joblib.load("./models/preprocessor.joblib")
-
-    data_trans = preprocessor.transform(data)
-    data_trans[:, -1] = np.uint(data_trans[:, -1] == "Yes")
-
-    data10 = shap.utils.sample(data_trans, 10, 42)
-
-    shap_values = explainer(data10)
-
-    feature_names = preprocessor.get_feature_names_out()
-    feature_names = list(map(lambda col: col.split("__")[-1], feature_names))
-
-    plt.figure(figsize=(10, 6))
-
-    shap.plots.bar(shap_values, show=False)
-    ax = plt.gca()
-    new_labels = [label.get_text().split("__")[-1].replace("_", " = ") for label in ax.get_yticklabels()]
-    ax.set_yticklabels(new_labels)
-
-    plt.tight_layout()
     
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight', dpi=100)
-    plt.close()
+    img_base64 = None
+    if request.method == "POST":
+        # # Create Bar plot
+        explainer = joblib.load("./models/shap_explainer.joblib")
+        preprocessor = joblib.load("./models/preprocessor.joblib")
+
+        data_trans = preprocessor.transform(data)
+        data_trans[:, -1] = np.uint(data_trans[:, -1] == "Yes")
+
+        data10 = shap.utils.sample(data_trans, 10, 42)
+
+        shap_values = explainer(data10)
+
+        feature_names = preprocessor.get_feature_names_out()
+        feature_names = list(map(lambda col: col.split("__")[-1], feature_names))
+
+        plt.figure(figsize=(10, 6))
+
+        shap.plots.bar(shap_values, show=False)
+        ax = plt.gca()
+        new_labels = [label.get_text().split("__")[-1].replace("_", " = ") for label in ax.get_yticklabels()]
+        ax.set_yticklabels(new_labels)
+
+        plt.tight_layout()
+        
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight', dpi=100)
+        plt.close()
     
-    img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        img_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     return render_template("dashboard.html", churn_rate=churn_rate,
                            total_customers=total_customers, churn_rates=churn_rates,
-                           churn_rates_option="churn_rates_option", bar_plot=img_base64)
+                           bar_plot=img_base64)

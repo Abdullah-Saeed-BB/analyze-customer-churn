@@ -191,37 +191,28 @@
       margin-bottom: 10px;
     }
 
-    .feature-legend {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 30px;
-    }
-
-    .feature-item {
+    #create-plot {
+      padding: 8px 12px;
+      margin: 5px;
+      border: 3px solid #008080;
+      border-radius: 100px;
       background: white;
-      padding: 15px;
-      border-radius: 8px;
-      border-left: 4px solid #008080;
-      text-align: center;
-    }
-
-    .feature-name {
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 5px;
-    }
-
-    .feature-impact {
       color: #008080;
-      font-size: 0.9em;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    .update-time {
-      text-align: center;
-      color: #666;
-      margin-top: 20px;
-      font-size: 0.9em;
+    #create-plot:hover {
+      background-color: #008080;
+      color: white
+    }
+
+    #create-plot:disabled {
+      background-color: #035e5e;
+      border-color: #035e5e;
+      color: white
     }
 
     @media (max-width: 768px) {
@@ -300,7 +291,13 @@
           SHAP Bar Plot
         </div>
         <p>Shows the importance for each feature</p>
+        {% if bar_plot %}
         <img src="data:image/png;base64,{{ bar_plot }}" alt="SHAP Waterfall Plot" style="max-width: 100%; height: auto; border-radius: 8px;">
+        {% else %}
+        <form action="/" method="post" onsubmit="disableButton()">
+          <button type="submit" id="create-plot">Create</code>
+        </form>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -308,7 +305,6 @@
   <script>
     let monthlyChart;
     const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-    const label = "{{ churn_rates_option }}";
     const churn_rates_str = "{{churn_rates}}".replaceAll("&#39;", '"', );
     const data = Object.fromEntries(JSON.parse(churn_rates_str));
 
@@ -323,7 +319,7 @@
           labels: labels,
           datasets: [
             {
-              label: label,
+              label: "",
               data: data["all"],
               borderColor: "#008080",
               backgroundColor: "rgba(0, 128, 128, 0.1)",
@@ -415,6 +411,10 @@
       initChart();
       updateChart("all")
     });
+
+    function disableButton() {
+      document.getElementById("create-plot").disabled = true
+    }
   </script>
 </div>
 {% endblock %}
