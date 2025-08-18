@@ -33,40 +33,10 @@ def dashboard():
         ("tenure more than avg", data["tenure"] >= data["tenure"].mean()),
         ("tenure less than avg", data["tenure"] < data["tenure"].mean()),
     ]    
-    # churn_rates = [float(chunk["Churn"].value_counts(True)["Yes"] * 100)
-    #                for _, condition in churn_filters
-    #                for chunk in split_dataframe(data[condition])]
     churn_rates = [
         [title, [float(chunk["Churn"].value_counts(True)["Yes"] * 100) for chunk in split_dataframe(data[condition])]]
         for title, condition in churn_filters 
     ]
-
-
-    # if request.method == "POST":
-    #     # Filter by the Contract
-    #     if "tenure__more_avg" in request.form:
-    #         churn_rates_option = "Tenure more than average"
-    #         churn_rates = [
-    #             chunk["Churn"].value_counts(True)["Yes"] * 100
-    #             for chunk in split_dataframe(data[data["tenure"] >= data["tenure"].mean()])
-    #         ]
-    #     elif "tenure__less_avg" in request.form:
-    #         churn_rates_option = "Tenure less than average"
-    #         churn_rates = [
-    #             chunk["Churn"].value_counts(True)["Yes"] * 100
-    #             for chunk in split_dataframe(data[data["tenure"] < data["tenure"].mean()])
-    #         ]
-    #     for contract_type in ["Month-to-month", "One year", "Two year"]:
-    #         if f"Contract__{contract_type}" in request.form:
-    #             churn_rates_option = f"{contract_type} contract"
-    #             churn_rates = [
-    #                 chunk["Churn"].value_counts(True)["Yes"] * 100
-    #                 for chunk in split_dataframe(data[data["Contract"] == contract_type])
-    #             ]
-    #             break
-    # if not churn_rates:
-    #     churn_rates_option = f"All"
-    #     churn_rates = [chunk["Churn"].value_counts(True)["Yes"] * 100 for chunk in split_dataframe(data)]
 
     # # Create Beeswarm plot
     explainer = joblib.load("./models/shap_explainer.joblib")
